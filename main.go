@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"ftpclient/commands"
+	"ftpclient/ftpclient"
 	"os"
 	"os/signal"
 	"strings"
@@ -20,6 +21,8 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 
+	client := ftpclient.NewClient()
+
 	for {
 		select {
 		case <-sigs:
@@ -29,7 +32,7 @@ func main() {
 			fmt.Print("> ")
 			text, _ := reader.ReadString('\n')
 			text = strings.Replace(text, "\n", "", -1)
-			commands.ExecuteCmd(text)
+			commands.ExecuteCmd(client, text)
 		}
 	}
 }

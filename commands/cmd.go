@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"ftpclient/ftpclient"
 	"strings"
 )
 
@@ -9,14 +10,14 @@ type Cmd struct {
 	name        string
 	description string
 	argName     string
-	execute     func(arg string, commands *[]*Cmd)
+	execute     func(client *ftpclient.FtpClient, arg string, commands *[]*Cmd)
 }
 
 var commands = []*Cmd{
 	helpCommand,
 }
 
-func ExecuteCmd(text string) {
+func ExecuteCmd(client *ftpclient.FtpClient, text string) {
 	text = strings.TrimSpace(text)
 
 	split := strings.Split(text, " ")
@@ -33,7 +34,7 @@ func ExecuteCmd(text string) {
 				return
 			}
 
-			cmd.execute(strings.Join(split[1:], " "), &commands)
+			cmd.execute(client, strings.Join(split[1:], " "), &commands)
 			return
 		}
 	}
