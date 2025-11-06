@@ -9,6 +9,7 @@ const (
 	statusUnknownCommand      = 500
 	statusSyntaxError         = 501
 	statusNotLoggedIn         = 530
+	statusEnteringPassive     = 227
 )
 
 func translateErrorStatusCode(code int) error {
