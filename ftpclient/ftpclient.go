@@ -95,6 +95,10 @@ func (c *FtpClient) Close() {
 	c.awaiting = false
 }
 
+func (c *FtpClient) IsConnected() bool {
+	return c.conn != nil
+}
+
 func (c *FtpClient) sendCommand(cmd string) ([]byte, error) {
 	_, err := fmt.Fprintf(c.conn, cmd+"\r\n")
 	if err != nil {
