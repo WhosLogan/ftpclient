@@ -7,5 +7,7 @@ type FtpClient struct {
 }
 
 func NewClient() *FtpClient {
-	return &FtpClient{}
+	return &FtpClient{
+		Username: "anonymous",
+	}
 }
