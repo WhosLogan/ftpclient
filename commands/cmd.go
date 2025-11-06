@@ -19,6 +19,7 @@ var commands = []*Cmd{
 	passCommand,
 	quitCommand,
 	closeCommand,
+	dirCommand,
 }
 
 func ExecuteCmd(client *ftpclient.FtpClient, text string) {
