@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"time"
 )
 
 type FtpClient struct {
@@ -28,9 +29,9 @@ func (c *FtpClient) Connect() error {
 		return errors.New("please close the active connection before opening a new one")
 	}
 
-	conn, err := net.Dial("tcp", c.Server+":21")
+	conn, err := net.DialTimeout("tcp", c.Server+":21", 5*time.Second) // Timeout after 5 seconds
 	if err != nil {
-		return err
+		return errors.New("unable to establish a connection")
 	}
 
 	c.conn = conn
