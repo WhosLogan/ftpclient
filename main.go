@@ -18,13 +18,14 @@ func main() {
 	fmt.Println("Type 'help' for a list of commands.")
 	fmt.Println()
 
+	reader := bufio.NewReader(os.Stdin)
+
 	for {
 		select {
 		case <-sigs:
 			fmt.Println("Exiting...")
 			return
 		default:
-			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("> ")
 			text, _ := reader.ReadString('\n')
 			text = strings.Replace(text, "\n", "", -1)
