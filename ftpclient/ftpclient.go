@@ -2,6 +2,7 @@ package ftpclient
 
 import (
 	"errors"
+	"fmt"
 	"net"
 )
 
@@ -38,4 +39,30 @@ func (c *FtpClient) Close() {
 		_ = c.conn.Close()
 		c.conn = nil
 	}
+}
+
+func (c *FtpClient) sendCommand(cmd string) ([]byte, error) {
+	_, err := fmt.Fprintf(c.conn, cmd+"\r\n")
+	if err != nil {
+		return nil, err
+	}
+
+	received := 1024
+	var response []byte
+
+	for received == 1024 {
+		reply := make([]byte, 1024)
+		received, err = c.conn.Read(reply)
+		if err != nil {
+			if received != 1024 {
+				break
+			}
+
+			return nil, err
+		}
+
+		response = append(response, reply[:received]...)
+	}
+
+	return response, nil
 }
