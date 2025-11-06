@@ -15,6 +15,9 @@ type Cmd struct {
 
 var commands = []*Cmd{
 	helpCommand,
+	userCommand,
+	passCommand,
+	quitCommand,
 }
 
 func ExecuteCmd(client *ftpclient.FtpClient, text string) {
