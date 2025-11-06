@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"strconv"
 )
 
 type FtpClient struct {
@@ -11,6 +12,9 @@ type FtpClient struct {
 	Password string
 	Server   string
 	conn     net.Conn
+	dataConn net.Conn
+	awaiting bool
+	dataChan chan []byte
 }
 
 func NewClient() *FtpClient {
@@ -31,14 +35,64 @@ func (c *FtpClient) Connect() error {
 
 	c.conn = conn
 
-	return nil
+	data, err := c.sendCommand("USER " + c.Username)
+	if err != nil {
+		return err
+	}
+
+	status, err := strconv.Atoi(string(data[0:3]))
+	if err != nil {
+		c.conn = nil
+		return errors.New("unable to read status code on authentication")
+	}
+
+	if status == statusReady {
+		return nil
+	}
+
+	if status == statusNeedPassword {
+		if c.Password == "" {
+			c.conn = nil
+			return errors.New("please set a password using the 'pass' command")
+		}
+
+		data, err := c.sendCommand("PASS " + c.Password)
+		if err != nil {
+			c.conn = nil
+			return err
+		}
+
+		status, err := strconv.Atoi(string(data[0:3]))
+		if err != nil {
+			c.conn = nil
+			return errors.New("unable to read status code on authentication")
+		}
+
+		if status == statusReady {
+			return nil
+		}
+
+		c.conn = nil
+		return translateErrorStatusCode(status)
+	}
+
+	c.conn = nil
+	return translateErrorStatusCode(status)
 }
 
 func (c *FtpClient) Close() {
 	if c.conn != nil {
+		_, _ = c.sendCommand("QUIT")
 		_ = c.conn.Close()
 		c.conn = nil
 	}
+
+	if c.dataConn != nil {
+		_ = c.dataConn.Close()
+		c.dataConn = nil
+	}
+
+	c.awaiting = false
 }
 
 func (c *FtpClient) sendCommand(cmd string) ([]byte, error) {
