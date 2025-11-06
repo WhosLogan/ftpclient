@@ -26,7 +26,7 @@ func main() {
 	for {
 		select {
 		case <-sigs:
-			fmt.Println("Exiting...")
+			client.Close()
 			return
 		default:
 			fmt.Print("> ")
