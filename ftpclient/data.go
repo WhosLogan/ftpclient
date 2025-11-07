@@ -49,8 +49,8 @@ func (c *FtpClient) handleConnection() {
 		return
 	}
 
-	c.awaiting = false
-	c.dataChan <- data
 	_ = c.dataConn.Close()
 	c.dataConn = nil
+	c.awaiting = false
+	c.dataChan <- data
 }
