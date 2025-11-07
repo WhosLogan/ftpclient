@@ -71,7 +71,7 @@ func (c *FtpClient) Connect() error {
 			return errors.New("unable to read status code on authentication")
 		}
 
-		if status == statusReady {
+		if status == statusAuthenticated {
 			return nil
 		}
 
