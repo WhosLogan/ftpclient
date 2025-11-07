@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"ftpclient/ftpclient"
+	"slices"
 	"strings"
 )
 
@@ -25,6 +26,12 @@ var commands = []*Cmd{
 	cdCommand,
 	getCommand,
 	putCommand,
+}
+
+func init() {
+	slices.SortFunc(commands, func(a, b *Cmd) int {
+		return strings.Compare(a.name, b.name)
+	})
 }
 
 func ExecuteCmd(client *ftpclient.FtpClient, text string) {
