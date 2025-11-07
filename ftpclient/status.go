@@ -11,6 +11,7 @@ const (
 	statusNotLoggedIn         = 530
 	statusEnteringPassive     = 227
 	statusDirectoryChanged    = 250
+	statusAuthenticated       = 230
 )
 
 func translateErrorStatusCode(code int) error {

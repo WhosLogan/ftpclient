@@ -36,6 +36,8 @@ func (c *FtpClient) Connect() error {
 
 	c.conn = conn
 
+	_, _ = c.readData()
+
 	data, err := c.sendCommand("USER " + c.Username)
 	if err != nil {
 		return err
@@ -47,7 +49,7 @@ func (c *FtpClient) Connect() error {
 		return errors.New("unable to read status code on authentication")
 	}
 
-	if status == statusReady {
+	if status == statusAuthenticated {
 		return nil
 	}
 
@@ -106,8 +108,13 @@ func (c *FtpClient) sendCommand(cmd string) ([]byte, error) {
 		return nil, err
 	}
 
+	return c.readData()
+}
+
+func (c *FtpClient) readData() ([]byte, error) {
 	received := 1024
 	var response []byte
+	var err error
 
 	for received == 1024 {
 		reply := make([]byte, 1024)
