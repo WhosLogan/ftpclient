@@ -2,11 +2,14 @@ package ftpclient
 
 import (
 	"errors"
+	"io"
+	"os"
 	"strconv"
+	"strings"
 )
 
 func (c *FtpClient) GetDirectoryList() (string, error) {
-	err := c.connectData()
+	err := c.readDataConnection()
 	if err != nil {
 		return "", err
 	}
@@ -32,7 +35,6 @@ func (c *FtpClient) ChangeDirectory(path string) error {
 
 	status, err := strconv.Atoi(string(data[0:3]))
 	if err != nil {
-		c.conn = nil
 		return errors.New("unable to read status code")
 	}
 
@@ -44,7 +46,7 @@ func (c *FtpClient) ChangeDirectory(path string) error {
 }
 
 func (c *FtpClient) GetFile(path string) ([]byte, error) {
-	err := c.connectData()
+	err := c.readDataConnection()
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +58,6 @@ func (c *FtpClient) GetFile(path string) ([]byte, error) {
 
 	status, err := strconv.Atoi(string(data[0:3]))
 	if err != nil {
-		c.conn = nil
 		_ = c.dataConn.Close()
 		return nil, errors.New("unable to read status code")
 	}
@@ -71,4 +72,51 @@ func (c *FtpClient) GetFile(path string) ([]byte, error) {
 	_, _ = c.readData()
 
 	return file, nil
+}
+
+func (c *FtpClient) SendFile(path string) (int, error) {
+	if strings.Contains(path, "/") || strings.Contains(path, "\\") {
+		return 0, errors.New("file must be a file name (not a path)")
+	}
+
+	file, err := os.OpenFile(path, os.O_RDONLY, 0666)
+	if err != nil {
+		return 0, errors.New("unable to open file")
+	}
+
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
+
+	dataConn, err := c.getDataConnection()
+	if err != nil {
+		return 0, errors.New("unable to open data connection with server")
+	}
+
+	data, err := c.sendCommand("STOR " + path)
+	if err != nil {
+		_ = dataConn.Close()
+		return 0, errors.New("unable to initiate file storing")
+	}
+
+	status, err := strconv.Atoi(string(data[0:3]))
+	if err != nil {
+		_ = c.dataConn.Close()
+		return 0, errors.New("unable to read status code")
+	}
+
+	if status != statusStartingTransfer {
+		_ = dataConn.Close()
+		return 0, errors.New("unable to start transfer")
+	}
+
+	// Check the status code here
+	written, err := io.Copy(dataConn, file)
+	_ = dataConn.Close()
+	if err != nil {
+		return 0, errors.New("unable to copy data to server")
+	}
+
+	_, _ = c.readData()
+	return int(written), nil
 }

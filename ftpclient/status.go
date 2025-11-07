@@ -13,6 +13,7 @@ const (
 	statusDirectoryChanged    = 250
 	statusAuthenticated       = 230
 	statusNoFileOrDirectory   = 550
+	statusStartingTransfer    = 150
 )
 
 func translateErrorStatusCode(code int) error {
