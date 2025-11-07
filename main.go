@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"ftpclient/commands"
+	"ftpclient/ftpclient"
 	"os"
 	"os/signal"
 	"strings"
@@ -18,17 +19,20 @@ func main() {
 	fmt.Println("Type 'help' for a list of commands.")
 	fmt.Println()
 
+	reader := bufio.NewReader(os.Stdin)
+
+	client := ftpclient.NewClient()
+
 	for {
 		select {
 		case <-sigs:
-			fmt.Println("Exiting...")
+			client.Close()
 			return
 		default:
-			reader := bufio.NewReader(os.Stdin)
 			fmt.Print("> ")
 			text, _ := reader.ReadString('\n')
 			text = strings.Replace(text, "\n", "", -1)
-			commands.ExecuteCmd(text)
+			commands.ExecuteCmd(client, text)
 		}
 	}
 }
