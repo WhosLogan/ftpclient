@@ -10,8 +10,8 @@ var helpCommand = &Cmd{
 	name:        "help",
 	description: "Provides a help menu",
 	execute: func(client *ftpclient.FtpClient, arg string, commands *[]*Cmd) {
+		builder := strings.Builder{}
 		for _, command := range *commands {
-			builder := strings.Builder{}
 			builder.WriteString(command.name)
 			if command.argName != "" {
 				builder.WriteString(" <")
@@ -21,7 +21,7 @@ var helpCommand = &Cmd{
 			builder.WriteString(": ")
 			builder.WriteString(command.description)
 			builder.WriteRune('\n')
-			fmt.Print(builder.String())
 		}
+		fmt.Print(builder.String())
 	},
 }
