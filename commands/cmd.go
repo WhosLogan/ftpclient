@@ -7,10 +7,11 @@ import (
 )
 
 type Cmd struct {
-	name        string
-	description string
-	argName     string
-	execute     func(client *ftpclient.FtpClient, arg string, commands *[]*Cmd)
+	name               string
+	description        string
+	argName            string
+	requiresConnection bool
+	execute            func(client *ftpclient.FtpClient, arg string, commands *[]*Cmd)
 }
 
 var commands = []*Cmd{
@@ -40,6 +41,11 @@ func ExecuteCmd(client *ftpclient.FtpClient, text string) {
 		if split[0] == cmd.name {
 			if cmd.argName == "" && len(split) > 1 {
 				fmt.Println("Invalid command syntax")
+				return
+			}
+
+			if cmd.requiresConnection && !client.IsConnected() {
+				fmt.Println("You are not connected to a server")
 				return
 			}
 

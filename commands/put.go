@@ -6,9 +6,10 @@ import (
 )
 
 var putCommand = &Cmd{
-	name:        "put",
-	description: "Uploads a file to the FTP server",
-	argName:     "file",
+	name:               "put",
+	description:        "Uploads a file to the FTP server",
+	argName:            "file",
+	requiresConnection: true,
 	execute: func(client *ftpclient.FtpClient, arg string, commands *[]*Cmd) {
 		if !client.IsConnected() {
 			fmt.Println("Not connected to server")

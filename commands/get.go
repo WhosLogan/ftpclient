@@ -8,9 +8,10 @@ import (
 )
 
 var getCommand = &Cmd{
-	name:        "get",
-	description: "Download's a file from the FTP server",
-	argName:     "file",
+	name:               "get",
+	description:        "Download's a file from the FTP server",
+	argName:            "file",
+	requiresConnection: true,
 	execute: func(client *ftpclient.FtpClient, arg string, commands *[]*Cmd) {
 		if arg == "" {
 			fmt.Println("Please provide a file name")

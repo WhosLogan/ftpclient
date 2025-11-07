@@ -6,9 +6,10 @@ import (
 )
 
 var cdCommand = &Cmd{
-	name:        "cd",
-	description: "Changes the current working directory",
-	argName:     "directory",
+	name:               "cd",
+	description:        "Changes the current working directory",
+	argName:            "directory",
+	requiresConnection: true,
 	execute: func(client *ftpclient.FtpClient, arg string, commands *[]*Cmd) {
 		if !client.IsConnected() {
 			fmt.Println("You are not connected to a server")
