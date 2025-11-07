@@ -35,7 +35,7 @@ func (c *FtpClient) ChangeDirectory(path string) error {
 		return errors.New("unable to read status code")
 	}
 
-	if status == 250 {
+	if status == statusDirectoryChanged {
 		return nil
 	}
 
