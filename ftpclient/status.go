@@ -3,7 +3,6 @@ package ftpclient
 import "errors"
 
 const (
-	statusReady               = 220
 	statusNeedPassword        = 331
 	statusServiceNotAvailable = 421
 	statusUnknownCommand      = 500
