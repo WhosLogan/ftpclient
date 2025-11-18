@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+    --color-bg: rgb(23, 23, 23);
+}
+
+body {
+    @apply bg-bg;
+    @apply text-white;
+}
