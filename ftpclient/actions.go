@@ -93,6 +93,11 @@ func (c *FtpClient) SendFile(path string) (int, error) {
 		return 0, errors.New("unable to open data connection with server")
 	}
 
+	_, err = c.sendCommand("TYPE I")
+	if err != nil {
+		return 0, errors.New("unable to convert the data connection to binary")
+	}
+
 	data, err := c.sendCommand("STOR " + path)
 	if err != nil {
 		_ = dataConn.Close()
