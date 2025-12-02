@@ -3,6 +3,7 @@ import {h} from 'preact';
 import {LocationProvider, Router} from "preact-iso";
 import {HomePage} from "./pages/home";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {BrowserPage} from "./pages/browser";
 
 const darkTheme = createTheme({
     palette: {
@@ -16,7 +17,8 @@ export function App(props: any) {
         <ThemeProvider theme={darkTheme}>
             <LocationProvider>
                 <Router children={[
-                    <HomePage path="/" />
+                    <HomePage path="/"/>,
+                    <BrowserPage path="/browser"/>
                 ]} />
             </LocationProvider>
         </ThemeProvider>

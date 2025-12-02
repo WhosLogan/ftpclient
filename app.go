@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"ftpclient/ftpclient"
 )
 
@@ -46,4 +47,23 @@ func (a *App) Connect(server, username, password string, anon bool) error {
 	}
 
 	return nil
+}
+
+func (a *App) Close() {
+	a.client.Close()
+}
+
+func (a *App) ListDirectory() ([]*ftpclient.FtpEntry, error) {
+	list, err := a.client.GetDirectoryList()
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, errors.New("unable to fetch directory list")
+	}
+
+	parsed, err := ftpclient.ParseDir(list)
+	if err != nil {
+		return nil, errors.New("unable to parse directory listing")
+	}
+
+	return parsed, nil
 }
