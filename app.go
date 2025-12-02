@@ -67,3 +67,7 @@ func (a *App) ListDirectory() ([]*ftpclient.FtpEntry, error) {
 
 	return parsed, nil
 }
+
+func (a *App) ChangeDirectory(path string) error {
+	return a.client.ChangeDirectory(path)
+}
