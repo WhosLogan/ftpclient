@@ -1,38 +1,36 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"ftpclient/commands"
-	"ftpclient/ftpclient"
-	"os"
-	"os/signal"
-	"strings"
-	"syscall"
+	"embed"
+
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
+//go:embed all:frontend/dist
+var assets embed.FS
+
 func main() {
-	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, os.Interrupt, syscall.SIGTERM)
+	// Create an instance of the app structure
+	app := NewApp()
 
-	fmt.Println("Welcome to Logan & Harrison's FTP Client")
-	fmt.Println("Type 'help' for a list of commands.")
-	fmt.Println()
+	// Create application with options
+	err := wails.Run(&options.App{
+		Title:  "ftpclient",
+		Width:  1024,
+		Height: 768,
+		AssetServer: &assetserver.Options{
+			Assets: assets,
+		},
+		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		OnStartup:        app.startup,
+		Bind: []interface{}{
+			app,
+		},
+	})
 
-	reader := bufio.NewReader(os.Stdin)
-
-	client := ftpclient.NewClient()
-
-	for {
-		select {
-		case <-sigs:
-			client.Close()
-			return
-		default:
-			fmt.Print("> ")
-			text, _ := reader.ReadString('\n')
-			text = strings.Replace(text, "\n", "", -1)
-			commands.ExecuteCmd(client, text)
-		}
+	if err != nil {
+		println("Error:", err.Error())
 	}
 }
