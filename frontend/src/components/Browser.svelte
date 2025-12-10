@@ -1,7 +1,7 @@
 <script lang="ts">
     import {Button, Modal, P} from "flowbite-svelte";
     import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
-    import {ChangeDirectory, Close, DownloadFile, ListDirectory} from "../../wailsjs/go/main/App";
+    import {ChangeDirectory, Close, DownloadFile, ListDirectory, UploadFile} from "../../wailsjs/go/main/App";
 
     let {onDisconnect} = $props();
     let listings = $state([]);
@@ -49,6 +49,19 @@
     async function disconnect() {
         await Close();
         onDisconnect();
+    }
+
+    async function upload() {
+        try {
+            await UploadFile();
+            modalTitle = "Success";
+            modalBody = "Uploaded file successfully. Refresh to see changes.";
+            modalOpen = true;
+        } catch (e) {
+            modalTitle = "Error";
+            modalBody = e;
+            modalOpen = true;
+        }
     }
 
     refresh();
@@ -103,6 +116,7 @@
         <div class="p-4">
             <Button onclick={disconnect}>Disconnect</Button>
             <Button onclick={refresh}>Refresh</Button>
+            <Button onclick={upload}>Upload</Button>
         </div>
     </div>
 </div>

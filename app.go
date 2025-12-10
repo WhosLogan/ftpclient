@@ -7,6 +7,8 @@ import (
 	"os"
 	"path"
 	"time"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -91,4 +93,17 @@ func (a *App) DownloadFile(name string) error {
 	}
 
 	return nil
+}
+
+func (a *App) UploadFile() error {
+	file, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Select a file to upload",
+	})
+
+	if err != nil {
+		return errors.New("unable to select a file")
+	}
+
+	_, err = a.client.SendFile(file)
+	return err
 }

@@ -11,3 +11,5 @@ export function Connect(arg1:string,arg2:string,arg3:string,arg4:boolean):Promis
 export function DownloadFile(arg1:string):Promise<void>;
 
 export function ListDirectory():Promise<Array<ftpclient.FtpEntry>>;
+
+export function UploadFile():Promise<void>;

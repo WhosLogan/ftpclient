@@ -21,3 +21,7 @@ export function DownloadFile(arg1) {
 export function ListDirectory() {
   return window['go']['main']['App']['ListDirectory']();
 }
+
+export function UploadFile() {
+  return window['go']['main']['App']['UploadFile']();
+}

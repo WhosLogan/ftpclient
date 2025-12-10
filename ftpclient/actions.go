@@ -4,8 +4,8 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 	"strconv"
-	"strings"
 )
 
 func (c *FtpClient) GetDirectoryList() (string, error) {
@@ -82,10 +82,6 @@ func (c *FtpClient) GetFile(path string) ([]byte, error) {
 }
 
 func (c *FtpClient) SendFile(path string) (int, error) {
-	if strings.Contains(path, "/") || strings.Contains(path, "\\") {
-		return 0, errors.New("file must be a file name (not a path)")
-	}
-
 	file, err := os.OpenFile(path, os.O_RDONLY, 0666)
 	if err != nil {
 		return 0, errors.New("unable to open file")
@@ -105,7 +101,7 @@ func (c *FtpClient) SendFile(path string) (int, error) {
 		return 0, errors.New("unable to convert the data connection to binary")
 	}
 
-	data, err := c.sendCommand("STOR " + path)
+	data, err := c.sendCommand("STOR " + filepath.Base(path))
 	if err != nil {
 		_ = dataConn.Close()
 		return 0, errors.New("unable to initiate file storing")
