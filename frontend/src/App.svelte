@@ -2,6 +2,5 @@
 </script>
 
 <main>
-    <p>asdfsdf</p>
-    <button>sdgdsfg</button>
+    <p>Hello World</p>
 </main>
