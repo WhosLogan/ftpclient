@@ -8,4 +8,6 @@ export function Close():Promise<void>;
 
 export function Connect(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<void>;
 
+export function DownloadFile(arg1:string):Promise<void>;
+
 export function ListDirectory():Promise<Array<ftpclient.FtpEntry>>;

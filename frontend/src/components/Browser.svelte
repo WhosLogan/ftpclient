@@ -1,7 +1,7 @@
 <script lang="ts">
     import {Button, Modal, P} from "flowbite-svelte";
     import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
-    import {ChangeDirectory, Close, ListDirectory} from "../../wailsjs/go/main/App";
+    import {ChangeDirectory, Close, DownloadFile, ListDirectory} from "../../wailsjs/go/main/App";
 
     let {onDisconnect} = $props();
     let listings = $state([]);
@@ -25,6 +25,20 @@
         try {
             await ChangeDirectory(dir);
             await refresh();
+        } catch (e) {
+            modalTitle = "Error";
+            modalBody = e;
+            modalOpen = true;
+        }
+    }
+
+    async function downloadFile(file: string) {
+        try {
+            await DownloadFile(file);
+
+            modalTitle = "Success";
+            modalBody = `File downloaded successfully to /files/${file}`;
+            modalOpen = true;
         } catch (e) {
             modalTitle = "Error";
             modalBody = e;
@@ -75,7 +89,8 @@
                                 <button onclick={() => changeDir(item.Name)}
                                         class="text-primary-600 dark:text-primary-500 font-medium hover:underline">Open</button>
                             {:else}
-                                <button class="text-primary-600 dark:text-primary-500 font-medium hover:underline">Download</button>
+                                <button onclick={() => downloadFile(item.Name)}
+                                        class="text-primary-600 dark:text-primary-500 font-medium hover:underline">Download</button>
                             {/if}
                         </TableBodyCell>
                     </TableBodyRow>

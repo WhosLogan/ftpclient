@@ -14,6 +14,10 @@ export function Connect(arg1, arg2, arg3, arg4) {
   return window['go']['main']['App']['Connect'](arg1, arg2, arg3, arg4);
 }
 
+export function DownloadFile(arg1) {
+  return window['go']['main']['App']['DownloadFile'](arg1);
+}
+
 export function ListDirectory() {
   return window['go']['main']['App']['ListDirectory']();
 }

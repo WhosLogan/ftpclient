@@ -53,6 +53,11 @@ func (c *FtpClient) GetFile(path string) ([]byte, error) {
 		return nil, err
 	}
 
+	_, err = c.sendCommand("TYPE I")
+	if err != nil {
+		return nil, errors.New("unable to convert the data connection to binary")
+	}
+
 	data, err := c.sendCommand("RETR " + path)
 	if err != nil {
 		return nil, err

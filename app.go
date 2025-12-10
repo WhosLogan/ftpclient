@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"ftpclient/ftpclient"
+	"os"
+	"path"
 	"time"
 )
 
@@ -71,4 +73,22 @@ func (a *App) ListDirectory() ([]*ftpclient.FtpEntry, error) {
 
 func (a *App) ChangeDirectory(path string) error {
 	return a.client.ChangeDirectory(path)
+}
+
+func (a *App) DownloadFile(name string) error {
+	file, err := a.client.GetFile(name)
+	if err != nil {
+		return errors.New("unable to download file")
+	}
+
+	if _, err := os.Stat("./files"); errors.Is(err, os.ErrNotExist) {
+		_ = os.Mkdir("./files", 0666)
+	}
+
+	err = os.WriteFile(path.Join("./files/", name), file, 0666)
+	if err != nil {
+		return errors.New("unable to save downloaded file")
+	}
+
+	return nil
 }
