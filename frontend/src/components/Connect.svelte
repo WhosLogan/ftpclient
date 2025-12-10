@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Button, Input, Checkbox, Modal, P } from 'flowbite-svelte';
     import {Connect} from "../../wailsjs/go/main/App";
+    import {Quit} from "../../wailsjs/runtime";
 
     let anon = $state(false);
     let host = $state('');
@@ -33,6 +34,7 @@
         <Input bind:value={password} disabled={anon} placeholder="Password" type="password" />
         <Checkbox bind:checked={anon}>Use Anonymous</Checkbox>
         <Button disabled={loading} onclick={() => connect()}>Connect</Button>
+        <Button disabled={loading} onclick={() => Quit()}>Exit</Button>
     </div>
 </div>
 
