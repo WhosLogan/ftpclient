@@ -132,3 +132,19 @@ func (c *FtpClient) readData() ([]byte, error) {
 
 	return response, nil
 }
+
+func (c *FtpClient) discardPending() {
+	_ = c.conn.SetReadDeadline(time.Now().Add(50 * time.Millisecond))
+	buf := make([]byte, 4096)
+
+	for {
+		_, err := c.conn.Read(buf)
+		if err != nil {
+			// EOF or timeout = nothing left
+			break
+		}
+	}
+
+	// clear deadline
+	_ = c.conn.SetReadDeadline(time.Time{})
+}

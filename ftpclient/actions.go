@@ -9,6 +9,7 @@ import (
 )
 
 func (c *FtpClient) GetDirectoryList() (string, error) {
+	c.discardPending()
 	err := c.readDataConnection()
 	if err != nil {
 		return "", err
@@ -28,6 +29,7 @@ func (c *FtpClient) GetDirectoryList() (string, error) {
 }
 
 func (c *FtpClient) ChangeDirectory(path string) error {
+	c.discardPending()
 	data, err := c.sendCommand("CWD " + path)
 	if err != nil {
 		return err
