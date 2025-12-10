@@ -8,10 +8,12 @@
     let password = $state('');
     let error = $state('');
     let open = $state(false);
+    let loading = $state(false);
 
     let {onConnect} = $props();
 
     async function connect() {
+        loading = true;
         try {
             await Connect(host, username, password, anon);
             onConnect();
@@ -19,6 +21,7 @@
             error = e;
             open = true;
         }
+        loading = false;
     }
 </script>
 
@@ -29,7 +32,7 @@
         <Input bind:value={username} disabled={anon} placeholder="Username" />
         <Input bind:value={password} disabled={anon} placeholder="Password" type="password" />
         <Checkbox bind:checked={anon}>Use Anonymous</Checkbox>
-        <Button onclick={() => connect()}>Connect</Button>
+        <Button disabled={loading} onclick={() => connect()}>Connect</Button>
     </div>
 </div>
 

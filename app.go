@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"ftpclient/ftpclient"
+	"time"
 )
 
 // App struct
@@ -44,6 +45,8 @@ func (a *App) Connect(server, username, password string, anon bool) error {
 	if err != nil {
 		return err
 	}
+
+	time.Sleep(1 * time.Second) // Unironically will help with any timing issues. Fix this later
 
 	return nil
 }

@@ -14,6 +14,6 @@
     {#if !connected}
         <Connect onConnect={() => connected = true} />
     {:else}
-        <Browser />
+        <Browser onDisconnect={() => connected = false} />
     {/if}
 </main>
