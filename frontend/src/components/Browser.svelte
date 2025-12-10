@@ -5,8 +5,9 @@
 
     let {onDisconnect} = $props();
     let listings = $state([]);
-    let error = $state("");
-    let open = $state(false);
+    let modalBody = $state("");
+    let modalOpen = $state(false);
+    let modalTitle = $state("");
 
     async function refresh() {
         let contents = await ListDirectory();
@@ -25,8 +26,9 @@
             await ChangeDirectory(dir);
             await refresh();
         } catch (e) {
-            error = e;
-            open = true;
+            modalTitle = "Error";
+            modalBody = e;
+            modalOpen = true;
         }
     }
 
@@ -91,8 +93,8 @@
 </div>
 
 
-<Modal title="An error has occurred" form bind:open={open}>
-    <P>{error}</P>
+<Modal title={modalTitle} form bind:open={modalOpen}>
+    <P>{modalBody}</P>
 
     <Button type="submit">Ok</Button>
 </Modal>

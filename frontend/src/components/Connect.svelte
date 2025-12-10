@@ -36,10 +36,8 @@
     </div>
 </div>
 
-<Modal title="An error has occurred" form bind:open={open}>
+<Modal title="Error" form bind:open={open}>
     <P>{error}</P>
 
-    {#snippet footer()}
-        <Button type="submit">Ok</Button>
-    {/snippet}
+    <Button type="submit">Ok</Button>
 </Modal>
